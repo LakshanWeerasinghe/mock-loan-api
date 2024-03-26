@@ -2,8 +2,6 @@ import ballerina/http;
 import ballerina/log;
 import ballerina/time;
 
-configurable int port = 8080;
-
 const UN_EMPLOYED = "un-employed";
 const SELF_EMPLOYED = "self-employed";
 const PERMENET = "permenent";
@@ -51,10 +49,10 @@ type Customer record {|
     string address;
 |};
 
-service /api/v1 on new http:Listener(port) {
+service /api/v1 on new http:Listener(8080) {
 
     function init() {
-        log:printInfo(string `Mock loan server started on port: ${port}`);
+        log:printInfo("Mock loan server started on port: 8080");
     }
 
     resource function get credit\-score(string ssn) returns CreditScoreResponse {

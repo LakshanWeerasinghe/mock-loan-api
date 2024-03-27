@@ -58,66 +58,23 @@ service /api/v1 on new http:Listener(8080) {
 
     resource function get credit\-score(string ssn) returns CreditScoreResponse {
         log:printInfo(string `Start: Get credit score for ssn: ${ssn}`);
-        string lastThreeDigits = ssn.substring(7, 10);
-        int|error paredInt = int:fromString(lastThreeDigits);
-        if paredInt is int {
-            log:printInfo(string `End: Get credit score for ssn: ${ssn}`);
-            return {ssn, score: paredInt};
-        }
+        CreditScoreResponse & readonly creditScoreResponse = creditScoreResponses.get(ssn);
         log:printInfo(string `End: Get credit score for ssn: ${ssn}`);
-        return {ssn, score: 775};
+        return creditScoreResponse;
     }
 
     resource function get credit\-history(string ssn) returns CreditHistoryResponse {
         log:printInfo(string `START: Get credit history for ssn: ${ssn}`);
+        CreditHistoryResponse creditHistoryResponse = creditHistoryResponses.get(ssn);
         log:printInfo(string `END: Get credit history for ssn: ${ssn}`);
-        return {
-            ssn,
-            creditHistory: generateMockCreditHistory(ssn)
-        };
+        return creditHistoryResponse;
     }
 
     resource function get loan/request(string id) returns LoanRequest {
         log:printInfo(string `START: Get loan request for id: ${id}`);
+        LoanRequest loanRequest = onlineLoanRequests.get(id);
         log:printInfo(string `END: Get loan request for id: ${id}`);
-        return {
-            loanDuration: 48,
-            amount: 70000,
-            pourpose: "SAMPLE",
-            loanId: id,
-            customer: {
-                customerId: "LOAN_CUS" + id,
-                firstName: "John",
-                lastName: "Doe",
-                dob: {month: 0, year: 0, day: 0},
-                ssn: "456-78-9012",
-                income: 160000,
-                employementStatus: PERMENET,
-                address: "Texas"
-            }
-        };
+        return loanRequest;
     }
 }
 
-function generateMockCreditHistory(string ssn) returns CreditHistory {
-    return {
-        defaults: 0,
-        currentLoans: 2,
-        paymentsOnTime: 40,
-        latePayments: 0,
-        totalDebt: 62000,
-        totalLoans: 6,
-        closedLoans: 4,
-        monthlyDebt: 4500
-    };
-}
-
-function getLoanRequest() returns LoanRequest {
-    return {
-        loanDuration: 0,
-        amount: 0,
-        pourpose: "",
-        loanId: "",
-        customer: {customerId: "", firstName: "", lastName: "", dob: {month: 0, year: 0, day: 0}, ssn: "", income: 0, employementStatus: PERMENET, address: ""}
-    };
-}

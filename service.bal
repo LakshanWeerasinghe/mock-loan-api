@@ -23,6 +23,7 @@ type CreditHistory record {|
     int latePayments;
     int defaults;
     decimal totalDebt;
+    decimal monthlyDebt;
 |};
 
 type CreditScoreResponse record {|
@@ -106,7 +107,8 @@ function generateMockCreditHistory(string ssn) returns CreditHistory {
         latePayments: 0,
         totalDebt: 62000,
         totalLoans: 6,
-        closedLoans: 4
+        closedLoans: 4,
+        monthlyDebt: 4500
     };
 }
 
